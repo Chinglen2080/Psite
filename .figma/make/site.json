@@ -1,0 +1,10 @@
+{
+  "description": "Create and organize ideas visually with a customizable mind mapping tool that features branching nodes and color options for enhanced clarity and creativity.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

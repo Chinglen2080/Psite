@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "psite"
+version = "0.1.0"
+description = "psite project"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["tomli>=2; python_version < '3.11'"]
+
+[project.optional-dependencies]
+release = ["build>=1", "twine>=5"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.project-enclave-tools]
+output = "text"
+environment-directory = ".venv"
+requirements-files = ["requirements.txt", "requirements-dev.txt"]
+env-template = ".env.example"
+local-config = ".env"
+
+[tool.project-enclave-tools.doctor]
+minimum-python = "3.8"
+
+[tool.project-enclave-tools.setup]
+editable = false
+
+[tool.project-enclave-tools.assets]
+directory = "assets"
+max-bytes = 10485760
+formats = ["png", "jpg", "jpeg", "gif", "webp", "svg"]
+
+[tool.project-enclave-tools.sign]
+include = []
+exclude = []
+
+[tool.project-enclave-tools.release]
+directory = "dist"
+sign = false
+
+[tool.project-enclave-tools.changelog]
+to-ref = "HEAD"
+
+[tool.project-enclave-tools.aliases]
+ci = ["check"]
+doctor-json = ["doctor", "--json"]
+
+[tool.project-enclave-tools.check]
+lint = ["ruff", "check", "src"]
+types = ["mypy", "src"]
+tests = ["pytest"]
