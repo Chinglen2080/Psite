@@ -399,6 +399,11 @@ export default function App() {
 
       <main id="main-content">
         <section className="hero" aria-labelledby="hero-title">
+          <div
+            className="hero-photo-background"
+            style={{ backgroundImage: `url("${portraitImage}")` }}
+            aria-hidden="true"
+          />
           <div className="hero-copy">
             <p className="eyebrow">
               <span className="eyebrow-mark" />
@@ -449,15 +454,6 @@ export default function App() {
               </a>
             </div>
           </div>
-
-          <figure className="portrait-polaroid">
-            <span className="tape-strip" aria-hidden="true" />
-            <img src={portraitImage} alt="Profile image chosen by Pradhya" />
-            <figcaption>one little piece of my internet</figcaption>
-            <span className="portrait-stamp handwritten">
-              made of tabs & feelings
-            </span>
-          </figure>
         </section>
 
         <div className="page-note">

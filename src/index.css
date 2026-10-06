@@ -243,6 +243,8 @@ svg {
 }
 
 .hero {
+  position: relative;
+  isolation: isolate;
   width: min(100% - 3rem, 980px);
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
@@ -252,8 +254,32 @@ svg {
   padding: clamp(3.5rem, 8vw, 6rem) 0 3.5rem;
 }
 
+.hero-photo-background {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -0.5rem 0 43%;
+  border: 3px solid var(--surface);
+  border-radius: 38px 92px 34px 76px;
+  background-position: center 34%;
+  background-size: cover;
+  box-shadow: 8px 10px 0 color-mix(in srgb, var(--primary) 20%, transparent);
+  opacity: 0.54;
+  transform: rotate(1.5deg);
+}
+
+.hero-photo-background::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, var(--bg), color-mix(in srgb, var(--bg) 52%, transparent) 35%, transparent 78%),
+    linear-gradient(0deg, color-mix(in srgb, var(--bg) 36%, transparent), transparent 45%);
+  content: "";
+}
+
 .hero-copy {
   position: relative;
+  z-index: 1;
 }
 
 .eyebrow,
@@ -415,34 +441,6 @@ svg {
   background: var(--surface);
 }
 
-.portrait-polaroid {
-  position: relative;
-  width: min(100%, 310px);
-  justify-self: center;
-  margin: 1rem 1rem 1.2rem;
-  padding: 0.75rem 0.75rem 2.8rem;
-  transform: rotate(3deg);
-  background: #fffdf9;
-  box-shadow: 0 8px 18px rgb(42 31 46 / 18%);
-}
-
-.portrait-polaroid img {
-  width: 100%;
-  aspect-ratio: 2 / 2.5;
-  display: block;
-  object-fit: cover;
-  object-position: center 34%;
-  background: #f6e6df;
-}
-
-.portrait-polaroid figcaption {
-  margin-top: 0.65rem;
-  color: #4e4147;
-  font-family: var(--hand2);
-  font-size: 0.9rem;
-  text-align: center;
-}
-
 .tape-strip,
 .card-tape {
   position: absolute;
@@ -457,19 +455,6 @@ svg {
 .tape-strip {
   top: -10px;
   left: calc(50% - 42px);
-}
-
-.portrait-stamp {
-  position: absolute;
-  right: -1.2rem;
-  bottom: 4rem;
-  padding: 0.25rem 0.55rem;
-  transform: rotate(7deg);
-  color: #fffaf7;
-  background: var(--coral);
-  border-radius: 4px 10px 4px 10px;
-  box-shadow: 2px 2px 0 var(--text);
-  font-size: 1rem;
 }
 
 .page-note {
@@ -1081,10 +1066,6 @@ textarea.edit-field {
     gap: 1.5rem;
   }
 
-  .portrait-polaroid {
-    width: min(100%, 270px);
-  }
-
   .music-grid {
     grid-template-columns: 1fr;
   }
@@ -1112,19 +1093,14 @@ textarea.edit-field {
 
   .hero {
     grid-template-columns: 1fr;
-    gap: 1.8rem;
+    min-height: 450px;
+    gap: 0;
     padding-top: 3rem;
   }
 
-  .hero-copy {
-    order: 1;
-  }
-
-  .portrait-polaroid {
-    order: 0;
-    width: min(72%, 270px);
-    justify-self: end;
-    margin-right: 1.2rem;
+  .hero-photo-background {
+    inset: 0 -0.2rem 0 18%;
+    opacity: 0.38;
   }
 
   .hero h1 {
@@ -1223,4 +1199,3 @@ textarea.edit-field {
     transition-duration: 0.01ms !important;
   }
 }
-
