@@ -1,86 +1,148 @@
-import { type ReactNode, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
-type ProjectLink = {
-  label: string
-  href: string
-}
+// Set true to show the optional in-browser profile editor.
+const PROFILE_EDITOR_ENABLED = false
 
 type Project = {
   title: string
   description: string
   link: string
   tag: string
-  action: string
-  image?: string
-  imageAlt?: string
-  relatedLinks?: ProjectLink[]
 }
 
 type SiteContent = {
   name: string
+  nickname: string
   intro: string
   about: string
   now: string
-  location: string
   email: string
   projects: Project[]
 }
 
+type SocialLink = {
+  name: string
+  handle: string
+  href?: string
+  mark: string
+}
+
 const starterContent: SiteContent = {
   name: "Pradhya",
-  intro: "I build communication tools for a more resilient internet.",
+  nickname: "Prad",
+  intro: "a little corner of my internet",
   about:
-    "I’m a student developer in Manipur, India. Project Enclave began with a local problem: internet shutdowns can take everyday services with them. I’m exploring a different shape for software—one where people and devices can still connect directly when a central service is out.",
-  now: "I’m iterating on Enclave Messenger, testing its available transports, and making it easier for people to install and understand. It’s an early project, and I’m sharing the progress as I go.",
-  location: "Manipur, India",
-  email: "contact@projectenclave.dev",
+    "I collect songs, get attached to fictional people, and make little corners of the internet feel like mine. I like imagining things that discomfort me for some reason.",
+  now: "something",
+  email: "pradhya@projectenclave.dev",
   projects: [
     {
       title: "Enclave Messenger",
       description:
-        "An early peer-to-peer messenger with end-to-end encrypted messages, web and terminal interfaces, and no central chat server. Current transport work includes LAN, Bluetooth, an internet DHT, and send-only SMS; LoRa is planned.",
+        "A peer-to-peer messenger exploring ways to keep messages moving when central services are unreachable. Still early, still changing.",
       link: "https://github.com/Project-Enclave/Enclave-Messenger",
-      tag: "active build · Python",
-      action: "Browse the code",
-      image:
-        "https://cdn.hackclub.com/01a0b4f9-633d-7b26-ac79-01f84c65c0be/Fri%20Sep%20%204%2004-29-55%20PM%20IST%202026%20Web-hero.jpg",
-      imageAlt: "Enclave Messenger’s web interface",
-      relatedLinks: [
-        {
-          label: "Setup guide",
-          href: "https://messenger.docs.projectenclave.dev",
-        },
-        {
-          label: "Releases",
-          href: "https://github.com/Project-Enclave/Enclave-Messenger/releases/latest",
-        },
-      ],
+      tag: "currently building",
     },
     {
       title: "Project Enclave",
       description:
-        "A longer-term effort to reduce reliance on one server or company. The messenger is its first project; distributed publishing and self-hosted sites are ideas for later.",
+        "A longer-term project about communication and publishing with fewer single points of failure.",
       link: "https://projectenclave.dev/",
-      tag: "the wider idea · in progress",
-      action: "Visit the project site",
+      tag: "the bigger idea",
     },
   ],
 }
 
-const legacyPlaceholders = {
-  name: "your name",
-  intro: "I make small things for the internet.",
-  about:
-    "This is my little corner of the web. I like making useful things, learning in public, and following ideas that seem interesting.",
-  now: "Learning how to make websites feel more human, keeping a tiny sketchbook, and looking for a new song to play on repeat.",
-  location: "somewhere on the internet",
-  email: "hello@example.com",
-  projects: [
-    "A tiny useful thing",
-    "My favorite experiment",
-    "Something in progress",
-  ],
-}
+const favoriteArtists = [
+  "akezu",
+  "boywithuke",
+  "hevlog",
+  "toby fox",
+  "msi",
+  "the marías",
+  "fish in a birdcage",
+  "flavor foley",
+  "mongopsy",
+  "sleep token",
+]
+
+const favoriteSongs = [
+  "alt vers.",
+  "spider dance",
+  "what do they know?",
+  "no one noticed",
+  "dangerous",
+  "provider",
+  "love in paradise",
+  "shoot love you",
+  "plot twist 10",
+  "rule #34",
+  "murder every 1 u know!",
+  "internet dont listen",
+]
+
+const currentlyWatching = ["the ramparts of ice", "black clover"]
+
+const finishedWatching = [
+  "sakamoto days",
+  "hell’s paradise",
+  "spy x family",
+  "bsd",
+  "call of the night",
+  "stranger things",
+  "tadc",
+  "murder drones",
+  "the fragrant flower blooms with dignity",
+]
+
+const gamesAndFandoms = [
+  "doki doki literature club",
+  "murder drones",
+  "the amazing digital circus",
+  "fundamental paper education",
+  "rusty lake",
+]
+
+const socialLinks: SocialLink[] = [
+  {
+    name: "Tumblr",
+    handle: "@pradhya",
+    href: "https://www.tumblr.com/pradhya",
+    mark: "t",
+  },
+  {
+    name: "Spotify",
+    handle: "my profile",
+    href: "https://open.spotify.com/user/31e6l2oz36qiqyncuc3m5yqthsze?si=nVw1QiB8S0mN_wvMNzfiVg",
+    mark: "♫",
+  },
+  {
+    name: "Telegram",
+    handle: "@pradhyaa",
+    href: "https://t.me/pradhyaa",
+    mark: "↗",
+  },
+  {
+    name: "Instagram",
+    handle: "@prad.hya_",
+    href: "https://www.instagram.com/prad.hya_/",
+    mark: "◎",
+  },
+  {
+    name: "GitHub",
+    handle: "@chinglen2080",
+    href: "https://github.com/chinglen2080",
+    mark: "⌘",
+  },
+  {
+    name: "Discord",
+    handle: "@chinglenalt",
+    mark: "☁",
+  },
+]
+
+const portraitImage =
+  "https://64.media.tumblr.com/224f719f13b948368ba6ee3ea9c9ad61/19a56e52e6bf425e-16/s2048x3072/957ab3fd92ac18fdd554a6c8152f1d2e3e860e89.jpg"
 
 function loadContent(): SiteContent {
   try {
@@ -89,44 +151,42 @@ function loadContent(): SiteContent {
 
     const parsed = JSON.parse(saved) as Partial<SiteContent>
     const content = { ...starterContent, ...parsed }
-    const projects = Array.isArray(parsed.projects)
-      ? parsed.projects.flatMap((project, index) => {
-          if (project.title !== legacyPlaceholders.projects[index])
-            return [project]
-          return starterContent.projects[index]
-            ? [starterContent.projects[index]]
-            : []
-        })
-      : starterContent.projects
 
-    return {
-      ...content,
-      name:
-        content.name === legacyPlaceholders.name
-          ? starterContent.name
-          : content.name,
-      intro:
-        content.intro === legacyPlaceholders.intro
-          ? starterContent.intro
-          : content.intro,
-      about:
-        content.about === legacyPlaceholders.about
-          ? starterContent.about
-          : content.about,
-      now:
-        content.now === legacyPlaceholders.now
-          ? starterContent.now
-          : content.now,
-      location:
-        content.location === legacyPlaceholders.location
-          ? starterContent.location
-          : content.location,
-      email:
-        content.email === legacyPlaceholders.email
-          ? starterContent.email
-          : content.email,
-      projects,
+    if (content.name === "your name") content.name = starterContent.name
+    if (content.email === "hello@example.com")
+      content.email = starterContent.email
+    if (content.email === "contact@projectenclave.dev") {
+      content.email = starterContent.email
     }
+    if (content.intro === "I make small things for the internet.") {
+      content.intro = starterContent.intro
+    }
+    if (
+      content.intro ===
+      "I build communication tools for a more resilient internet."
+    ) {
+      content.intro = starterContent.intro
+    }
+    if (
+      content.about ===
+      "This is my little corner of the web. I like making useful things, learning in public, and following ideas that seem interesting."
+    ) {
+      content.about = starterContent.about
+    }
+    if (
+      content.about.startsWith("I’m a student developer in Manipur, India.")
+    ) {
+      content.about = starterContent.about
+    }
+    if (
+      content.now.startsWith(
+        "I’m iterating on Enclave Messenger, testing its available transports",
+      )
+    ) {
+      content.now = starterContent.now
+    }
+
+    return content
   } catch {
     return starterContent
   }
@@ -135,15 +195,9 @@ function loadContent(): SiteContent {
 function Icon({
   name,
 }: {
-  name: "edit" | "arrow" | "moon" | "sun" | "plus" | "close"
+  name: "arrow" | "moon" | "sun" | "edit" | "close" | "plus"
 }) {
   const paths = {
-    edit: (
-      <>
-        <path d="m4 16-.8 4 4-.8L18.4 8 15.9 5.6 4 16Z" />
-        <path d="m14.8 6.7 2.5 2.5" />
-      </>
-    ),
     arrow: <path d="M5 12h13M13 6l6 6-6 6" />,
     moon: <path d="M20 15.2A8 8 0 0 1 8.8 4 8.2 8.2 0 1 0 20 15.2Z" />,
     sun: (
@@ -152,8 +206,14 @@ function Icon({
         <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       </>
     ),
-    plus: <path d="M12 5v14M5 12h14" />,
+    edit: (
+      <>
+        <path d="m4 16-.8 4 4-.8L18.4 8 15.9 5.6 4 16Z" />
+        <path d="m14.8 6.7 2.5 2.5" />
+      </>
+    ),
     close: <path d="m6 6 12 12M18 6 6 18" />,
+    plus: <path d="M12 5v14M5 12h14" />,
   }
 
   return (
@@ -203,17 +263,33 @@ function EditableText({
   )
 }
 
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string
-  children: ReactNode
-}) {
-  return (
-    <a href={href} target="_blank" rel="noreferrer">
-      {children}
+function SocialCard({ item }: { item: SocialLink }) {
+  const cardContent = (
+    <>
+      <span className="social-mark" aria-hidden="true">
+        {item.mark}
+      </span>
+      <span className="social-copy">
+        <span className="social-name">{item.name}</span>
+        <span className="social-handle">{item.handle}</span>
+      </span>
+      <span className="social-arrow" aria-hidden="true">
+        {item.href ? "↗" : "·"}
+      </span>
+    </>
+  )
+
+  return item.href ? (
+    <a
+      className="social-card"
+      href={item.href}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {cardContent}
     </a>
+  ) : (
+    <div className="social-card social-card-static">{cardContent}</div>
   )
 }
 
@@ -261,7 +337,6 @@ export default function App() {
         description: "What are you exploring?",
         link: "https://",
         tag: "in progress",
-        action: "Open project",
       },
     ])
   }
@@ -281,40 +356,42 @@ export default function App() {
 
       <header className="site-header">
         <a className="logo" href="#top" aria-label={content.name + " — home"}>
-          <span>~/</span>
-          {content.name}
+          <span className="logo-mark">✳</span>
+          <span>{content.name}</span>
         </a>
 
         <nav aria-label="Main navigation">
-          <a href="#work">work</a>
-          <a href="#about">about</a>
-          <a href="#now">now</a>
+          <a href="#music">music</a>
+          <a href="#watchlist">shows</a>
+          <a href="#links">links</a>
           <button
-            className="nav-button theme-button"
+            className="theme-button"
             onClick={() => setDark((value) => !value)}
             aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
             aria-pressed={dark}
           >
             <Icon name={dark ? "sun" : "moon"} />
           </button>
-          <button
-            className={"nav-button edit-button " + (editing ? "active" : "")}
-            onClick={() => (editing ? save() : setEditing(true))}
-            aria-pressed={editing}
-          >
-            <Icon name="edit" />
-            {editing ? "save" : "edit"}
-          </button>
+          {PROFILE_EDITOR_ENABLED && (
+            <button
+              className={"edit-button " + (editing ? "active" : "")}
+              onClick={() => (editing ? save() : setEditing(true))}
+              aria-pressed={editing}
+            >
+              <Icon name="edit" />
+              {editing ? "save" : "edit"}
+            </button>
+          )}
         </nav>
       </header>
 
-      {editing && (
+      {PROFILE_EDITOR_ENABLED && editing && (
         <div className="edit-notice" role="status">
           <span className="status-dot" />
           edit mode is on — update a highlighted field, then save
         </div>
       )}
-      {saved && (
+      {PROFILE_EDITOR_ENABLED && saved && (
         <div className="saved-toast" role="status">
           changes saved in this browser
         </div>
@@ -325,193 +402,376 @@ export default function App() {
           <div className="hero-copy">
             <p className="eyebrow">
               <span className="eyebrow-mark" />
-              student developer <span className="eyebrow-divider">/</span>{" "}
-              Manipur, India
+              she/her <span className="eyebrow-divider">·</span> minor
             </p>
+            <span className="handwritten hero-wave">hiii, welcome in!</span>
             <h1 id="hero-title">
-              Hi, I’m{" "}
-              <em>
-                <EditableText
-                  value={content.name}
-                  onChange={(value) => update("name", value)}
-                  edit={editing}
-                />
-              </em>
+              <EditableText
+                value={content.name}
+                onChange={(value) => update("name", value)}
+                edit={editing}
+              />
+              <span className="hero-period">!</span>
+            </h1>
+            <p className="hero-alias">
+              or just{" "}
+              <EditableText
+                value={content.nickname}
+                onChange={(value) => update("nickname", value)}
+                edit={editing}
+              />
               .
-              <br />
+            </p>
+            <p className="hero-intro">
               <EditableText
                 value={content.intro}
                 onChange={(value) => update("intro", value)}
                 edit={editing}
               />
-            </h1>
-            <p className="hero-description">
-              I’m working on Project Enclave: experiments in communication and
-              publishing that depend less on central services.
             </p>
-            <p className="small-note">
-              // small steps toward software that can keep connecting
+            <p className="hero-note">
+              music, fictional people & very specific internet corners
             </p>
+            <div className="hero-stickers" aria-label="A few things I like">
+              <span>songs on repeat</span>
+              <span>fandom brain</span>
+              <span>currently a wip</span>
+            </div>
             <div className="button-row">
-              <a className="button primary-button" href="#work">
-                see what I’m building <Icon name="arrow" />
+              <a className="button primary-button" href="#music">
+                see my favorites <Icon name="arrow" />
               </a>
               <a
                 className="button ghost-button"
-                href={"mailto:" + content.email}
+                href="mailto:pradhya@projectenclave.dev"
               >
-                say hello
+                say hi
               </a>
             </div>
           </div>
 
-          <div
-            className="network-card"
-            aria-label="A direct connection between two peers"
-          >
-            <div className="network-card-header">
-              <span>FIELD NOTE 001</span>
-              <span className="network-status">
-                <span className="status-dot" /> in development
-              </span>
+          <figure className="portrait-polaroid">
+            <span className="tape-strip" aria-hidden="true" />
+            <img src={portraitImage} alt="Profile image chosen by Pradhya" />
+            <figcaption>one little piece of my internet</figcaption>
+            <span className="portrait-stamp handwritten">
+              made of tabs & feelings
+            </span>
+          </figure>
+        </section>
+
+        <div className="page-note">
+          <span>last updated: 02 july 2026</span>
+          <span>little personal corner · take a look around</span>
+        </div>
+
+        <section
+          id="about"
+          className="content-section about-section"
+          aria-labelledby="about-title"
+        >
+          <div className="section-title">
+            <div>
+              <p className="section-kicker">01 / a little about me</p>
+              <h2 id="about-title">the person behind the tabs</h2>
             </div>
-            <div className="network-diagram" aria-hidden="true">
-              <div className="network-node">
-                <span className="node-symbol">01</span>
-                <span>peer one</span>
-              </div>
-              <div className="network-link">
-                <span>direct · p2p</span>
-              </div>
-              <div className="network-node">
-                <span className="node-symbol node-symbol-alt">02</span>
-                <span>peer two</span>
-              </div>
-            </div>
-            <div className="network-card-footer">
-              <span>no central chat server</span>
-              <span className="network-signal" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-            </div>
+            <span className="handwritten margin-note">
+              hello from my side of the screen ♡
+            </span>
+          </div>
+
+          <div className="about-grid">
+            <article className="paper-card about-card">
+              <span className="card-tape" aria-hidden="true" />
+              <h3 className="handwritten">so, hi!</h3>
+              <EditableText
+                value={content.about}
+                onChange={(value) => update("about", value)}
+                edit={editing}
+                multiline
+              />
+            </article>
+
+            <aside className="paper-card quick-facts">
+              <p className="section-kicker">tiny facts</p>
+              <dl>
+                <div>
+                  <dt>name</dt>
+                  <dd>Pradhya / Prad</dd>
+                </div>
+                <div>
+                  <dt>pronouns</dt>
+                  <dd>she / her</dd>
+                </div>
+                <div>
+                  <dt>vibe</dt>
+                  <dd>INTJ // IST</dd>
+                </div>
+                <div>
+                  <dt>messages</dt>
+                  <dd>open, but I might be slow</dd>
+                </div>
+              </dl>
+              <p className="handwritten fact-doodle">moots welcome :)</p>
+            </aside>
           </div>
         </section>
 
-        <div className="divider" />
+        <section
+          id="music"
+          className="content-section music-section"
+          aria-labelledby="music-title"
+        >
+          <div className="section-title">
+            <div>
+              <p className="section-kicker">02 / things in my headphones</p>
+              <h2 id="music-title">music i keep coming back to</h2>
+            </div>
+            <span className="handwritten margin-note">volume up, probably</span>
+          </div>
+
+          <div className="music-now paper-card">
+            <span className="tape-strip tape-small" aria-hidden="true" />
+            <div>
+              <p className="section-kicker">
+                currently listening · from my july intro
+              </p>
+              <p className="now-song handwritten">{content.now}</p>
+            </div>
+            <span className="music-scribble" aria-hidden="true">
+              ♫ ♪ ♫
+            </span>
+          </div>
+
+          <div className="music-grid">
+            <article className="paper-card list-card artists-card">
+              <div className="card-label-row">
+                <h3 className="handwritten">artists i like</h3>
+                <span className="doodle-star" aria-hidden="true">
+                  ✳
+                </span>
+              </div>
+              <div className="tag-cloud">
+                {favoriteArtists.map((artist) => (
+                  <span className="tag" key={artist}>
+                    {artist}
+                  </span>
+                ))}
+              </div>
+            </article>
+
+            <article className="paper-card list-card songs-card">
+              <div className="card-label-row">
+                <h3 className="handwritten">favorite songs</h3>
+                <span className="handwritten song-note">shuffle forever</span>
+              </div>
+              <ol className="song-list">
+                {favoriteSongs.map((song, index) => (
+                  <li key={song}>
+                    <span className="song-index">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{song}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className="disclaimer">
+                “Plot Twist 10” is a favorite; I’m not the artist Oricade.
+              </p>
+            </article>
+          </div>
+        </section>
 
         <section
-          id="work"
-          className="content-section"
-          aria-labelledby="work-title"
+          id="watchlist"
+          className="content-section shows-section"
+          aria-labelledby="shows-title"
         >
-          <div className="section-heading">
+          <div className="section-title">
             <div>
-              <p className="section-kicker">01 / selected work</p>
-              <h2 id="work-title">Building Enclave</h2>
+              <p className="section-kicker">
+                03 / currently in fictional worlds
+              </p>
+              <h2 id="shows-title">shows, anime & other brain space</h2>
             </div>
-            <p className="section-aside">
-              An independent project, learning in the open.
-            </p>
+            <span className="handwritten margin-note">one more episode</span>
+          </div>
+
+          <div className="watch-grid">
+            <article className="paper-card watch-card current-watch">
+              <span className="mini-stamp">on screen now</span>
+              <h3 className="handwritten">currently watching</h3>
+              <ul className="plain-list">
+                {currentlyWatching.map((show) => (
+                  <li key={show}>{show}</li>
+                ))}
+              </ul>
+            </article>
+            <article className="paper-card watch-card next-watch">
+              <span className="mini-stamp mini-stamp-coral">up next</span>
+              <h3 className="handwritten">plan to watch</h3>
+              <ul className="plain-list">
+                <li>frieren</li>
+              </ul>
+            </article>
+            <article className="paper-card watch-card finished-watch">
+              <span className="mini-stamp mini-stamp-purple">
+                the list keeps growing
+              </span>
+              <h3 className="handwritten">finished</h3>
+              <div className="tag-cloud compact-tags">
+                {finishedWatching.map((show) => (
+                  <span className="tag" key={show}>
+                    {show}
+                  </span>
+                ))}
+              </div>
+            </article>
+          </div>
+
+          <article className="paper-card fandom-card">
+            <div>
+              <p className="section-kicker">game worlds & fandoms</p>
+              <h3 className="handwritten">things i’m into</h3>
+            </div>
+            <div className="tag-cloud">
+              {gamesAndFandoms.map((fandom) => (
+                <span className="tag" key={fandom}>
+                  {fandom}
+                </span>
+              ))}
+            </div>
+          </article>
+        </section>
+
+        <section
+          className="content-section note-section"
+          aria-label="A random thought"
+        >
+          <article className="thought-card">
+            <span className="thought-spark" aria-hidden="true">
+              ✦
+            </span>
+            <p className="section-kicker">random thought, left here</p>
+            <blockquote className="handwritten">
+              I like imagining things that discomfort me for some reason.
+            </blockquote>
+            <span
+              className="thought-spark thought-spark-bottom"
+              aria-hidden="true"
+            >
+              ✧
+            </span>
+          </article>
+        </section>
+
+        <section
+          id="links"
+          className="content-section links-section"
+          aria-labelledby="links-title"
+        >
+          <div className="section-title">
+            <div>
+              <p className="section-kicker">04 / find me around</p>
+              <h2 id="links-title">the links page within the page</h2>
+            </div>
+            <span className="handwritten margin-note">
+              most places: @chinglen2080
+            </span>
+          </div>
+
+          <div className="social-grid">
+            {socialLinks.map((item) => (
+              <SocialCard item={item} key={item.name} />
+            ))}
+            <a
+              className="social-card email-card"
+              href="mailto:pradhya@projectenclave.dev"
+            >
+              <span className="social-mark" aria-hidden="true">
+                @
+              </span>
+              <span className="social-copy">
+                <span className="social-name">Email</span>
+                <span className="social-handle">
+                  pradhya@projectenclave.dev
+                </span>
+              </span>
+              <span className="social-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+          <div className="social-footnote">
+            <span className="status-dot" />
+            DMs are open · moots welcome · replies are not guaranteed
+          </div>
+        </section>
+
+        <section
+          id="projects"
+          className="content-section projects-section"
+          aria-labelledby="projects-title"
+        >
+          <div className="section-title">
+            <div>
+              <p className="section-kicker">05 / things i’m helping make</p>
+              <h2 id="projects-title">a tiny project corner</h2>
+            </div>
           </div>
 
           <div className="project-grid">
             {content.projects.map((project, index) => (
               <article
-                className="card project-card"
+                className="paper-card project-card"
                 key={project.title + index}
               >
-                {project.image && (
-                  <div className="project-art">
-                    <img
-                      src={project.image}
-                      alt={project.imageAlt || ""}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                )}
-
-                <div className="project-content">
-                  <div className="card-topline">
-                    <span className="project-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="tag">
-                      {editing ? (
-                        <EditableText
-                          value={project.tag}
-                          onChange={(value) =>
-                            updateProject(index, "tag", value)
-                          }
-                          edit
-                        />
-                      ) : (
-                        project.tag
-                      )}
-                    </span>
-                  </div>
-
-                  <h3>
-                    <EditableText
-                      value={project.title}
-                      onChange={(value) => updateProject(index, "title", value)}
-                      edit={editing}
-                    />
-                  </h3>
-                  <EditableText
-                    value={project.description}
-                    onChange={(value) =>
-                      updateProject(index, "description", value)
-                    }
-                    edit={editing}
-                    multiline
-                    className="project-description"
-                  />
-
-                  {editing ? (
-                    <label className="link-editor">
-                      project URL
-                      <EditableText
-                        value={project.link}
-                        onChange={(value) =>
-                          updateProject(index, "link", value)
-                        }
-                        edit
-                      />
-                    </label>
-                  ) : (
-                    <div className="project-actions">
-                      <ExternalLink href={project.link}>
-                        <span className="project-link">
-                          {project.action || "open project"}{" "}
-                          <Icon name="arrow" />
-                        </span>
-                      </ExternalLink>
-                      {project.relatedLinks?.map((relatedLink) => (
-                        <ExternalLink
-                          key={relatedLink.href}
-                          href={relatedLink.href}
-                        >
-                          <span className="related-link">
-                            {relatedLink.label}
-                          </span>
-                        </ExternalLink>
-                      ))}
-                    </div>
-                  )}
-
-                  {editing && (
-                    <button
-                      className="remove-button"
-                      onClick={() => deleteProject(index)}
-                    >
-                      <Icon name="close" /> remove
-                    </button>
-                  )}
+                <div className="card-label-row">
+                  <span className="project-number">0{index + 1}</span>
+                  <span className="tag">{project.tag}</span>
                 </div>
+                <h3 className="handwritten">
+                  <EditableText
+                    value={project.title}
+                    onChange={(value) => updateProject(index, "title", value)}
+                    edit={editing}
+                  />
+                </h3>
+                <EditableText
+                  value={project.description}
+                  onChange={(value) =>
+                    updateProject(index, "description", value)
+                  }
+                  edit={editing}
+                  multiline
+                />
+                {editing ? (
+                  <label className="link-editor">
+                    link
+                    <EditableText
+                      value={project.link}
+                      onChange={(value) => updateProject(index, "link", value)}
+                      edit
+                    />
+                  </label>
+                ) : (
+                  <a
+                    className="text-link"
+                    href={project.link}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    open project <Icon name="arrow" />
+                  </a>
+                )}
+                {editing && (
+                  <button
+                    className="remove-button"
+                    onClick={() => deleteProject(index)}
+                  >
+                    <Icon name="close" /> remove
+                  </button>
+                )}
               </article>
             ))}
           </div>
@@ -521,121 +781,12 @@ export default function App() {
             </button>
           )}
         </section>
-
-        <div className="divider" />
-
-        <section
-          id="about"
-          className="content-section"
-          aria-labelledby="about-title"
-        >
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">02 / the reason</p>
-              <h2 id="about-title">Why this work matters to me</h2>
-            </div>
-          </div>
-
-          <div className="about-grid">
-            <div className="card about-card">
-              <span className="about-mark" aria-hidden="true">
-                “
-              </span>
-              <EditableText
-                value={content.about}
-                onChange={(value) => update("about", value)}
-                edit={editing}
-                multiline
-              />
-            </div>
-            <div className="card details-card">
-              <p className="section-kicker">A few coordinates</p>
-              <dl>
-                <div>
-                  <dt>based</dt>
-                  <dd>
-                    <EditableText
-                      value={content.location}
-                      onChange={(value) => update("location", value)}
-                      edit={editing}
-                    />
-                  </dd>
-                </div>
-                <div>
-                  <dt>building</dt>
-                  <dd>
-                    <ExternalLink href="https://projectenclave.dev/">
-                      Project Enclave
-                    </ExternalLink>
-                  </dd>
-                </div>
-                <div>
-                  <dt>stage</dt>
-                  <dd>
-                    <span className="status-dot" /> early development
-                  </dd>
-                </div>
-                <div>
-                  <dt>contact</dt>
-                  <dd>
-                    {editing ? (
-                      <EditableText
-                        value={content.email}
-                        onChange={(value) => update("email", value)}
-                        edit
-                      />
-                    ) : (
-                      <a href={"mailto:" + content.email}>{content.email}</a>
-                    )}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <div className="divider" />
-
-        <section
-          id="now"
-          className="content-section"
-          aria-labelledby="now-title"
-        >
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">03 / right now</p>
-              <h2 id="now-title">What I’m working on</h2>
-            </div>
-            <span className="live-badge">
-              <span className="status-dot" /> current focus
-            </span>
-          </div>
-          <div className="now-card">
-            <EditableText
-              value={content.now}
-              onChange={(value) => update("now", value)}
-              edit={editing}
-              multiline
-            />
-            <div className="now-footer">
-              <span>one step at a time</span>
-              <span className="network-signal" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-            </div>
-          </div>
-        </section>
       </main>
 
-      <footer>
-        <p>Built with curiosity in Manipur. Still in progress.</p>
+      <footer className="site-footer">
+        <p>made with love, too many tabs, and a very specific playlist.</p>
         <div>
-          <ExternalLink href="https://projectenclave.dev/">
-            Project Enclave
-          </ExternalLink>
+          <a href="mailto:pradhya@projectenclave.dev">say hi</a>
           <span aria-hidden="true">·</span>
           <a href="#top">back to top ↑</a>
         </div>
